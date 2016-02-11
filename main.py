@@ -1,12 +1,16 @@
 #Author: Lena Voytek
 
+from pyb import I2C
 #Get sensor data from resistance values
 def get_data():
-	s_light = pyb.ADC(pyb.Pin.cpu.A1)
-	s_humidity = pyb.ADC(pyb.Pin.cpu.A2)
-	s_temp = pyb.ADC(pyb.Pin.cpu.A3)
-	s_flex = pyb.ADC(pyb.Pin.cpu.A4)
-	print (s_light.read(), s_humidity.read(), s_temp.read(), s_flex.read())
+	s_light = pyb.ADC(pyb.Pin.cpu.A4)
+	s_humidity = pyb.ADC(pyb.Pin.cpu.A1)
+
+	s_temp = I2C(2, I2C.MASTER, baudrate=100000) #Y9-10
+	
+
+	s_flex = pyb.ADC(pyb.Pin.cpu.A0)
+	print ("Light:", s_light.read(), "Humidity:", s_humidity.read(), "WindSpeed:", s_flex.read(), " "),
 	pyb.LED(4).on()
 
 get_data()

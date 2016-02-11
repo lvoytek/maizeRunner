@@ -6,7 +6,7 @@ import time, keypress, read_data
 
 
 #direct keyboard: 1, Auto: 2
-MODE = 2
+MODE = 1
 
 #setup and import GPIO library
 import RPi.GPIO as GPIO
@@ -21,6 +21,8 @@ Motor1E = 24
 Motor2A = 17
 Motor2B = 27
 Motor2E = 26
+
+ModeButton = 18
  
 GPIO.setup(Motor1A,GPIO.OUT)
 GPIO.setup(Motor1B,GPIO.OUT)
@@ -30,7 +32,7 @@ GPIO.setup(Motor2A,GPIO.OUT)
 GPIO.setup(Motor2B,GPIO.OUT)
 GPIO.setup(Motor2E,GPIO.OUT)
 
-
+GPIO.setup(ModeButton, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 #movement functions
 def forward():
@@ -70,6 +72,12 @@ def stopmoving():
 runtimes = 0
 
 while 1:
+
+	#Button Mode Switching
+	if GPIO.input(ModeButton):
+		Mode += 1
+		if Mode > 2:
+			Mode = 1
 	
 	#using direct keyboard input
 	if (MODE == 1):
@@ -91,11 +99,13 @@ while 1:
 			stopmoving()
  	
  	
-	#Automated movement
+	#AI Movement
  	elif (MODE == 2):
 		read_data.measure()	
 
-
+	#continuous read mode
+	elif (MODE == 3):
+		read_data.measure()
 		
 	
 GPIO.cleanup()
