@@ -1,5 +1,6 @@
 #Author: Lena Voytek
 import pyboard
+import pynmea2 #used to parse gps data
 
 def execfil(filename, device='/dev/ttyACM0'):
 	pyb = pyboard.Pyboard(device)
@@ -15,6 +16,15 @@ def measure():
 	logfile = open('/var/www/html/log.txt','a')
 	logfile.write(execfil('main.py'))
 		
+	logfileb = open('/var/www/html/gpslog.txt','a')
+
+	gpsdatastr = str()
+	gpsdatastr += execfil('gpsinput.py')
+	gpsdatastr = gpsdatastr[2:]
+	logfileb.write(gpsdatastr)
+	
+	msg = pynmea2.parse(gpsdatastr)
+	logfile.write((msg.latitude, msg.longitude))
 
 if __name__ == "__main__":
 	measure()
